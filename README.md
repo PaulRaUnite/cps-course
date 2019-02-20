@@ -20,4 +20,4 @@ Using Python, NetworkX and Matplotlib make:
 
 1) dependencies: `python3.6`, `networkx-2.2`, `matplotlib-3`;
 2) you **CAN** run `pip install -r requirements.txt` to install versions I have;
-3) run `python <script>` to run any of them.
+3) run `python <script> [--help]` to run any of them.
