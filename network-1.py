@@ -36,5 +36,14 @@ for i in range(1, steps):
     results.append(message_count)
 
 print('Step message counts: ', ', '.join(map(str, results)))
+
+plt.subplot(1, 2, 1)
+nx.draw(Net)
+plt.title('Net')
+
+plt.subplot(1, 2, 2)
 plt.plot(list(range(steps)), results)
+plt.xlabel('Steps')
+plt.ylabel('Messages')
+
 plt.show()
