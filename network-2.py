@@ -1,18 +1,17 @@
 import argparse
 import random
-from collections import namedtuple
 from itertools import count
 
 import matplotlib.pyplot as plt
 import networkx as nx
 
-Message = namedtuple('Message', ())
+from utils import complement_edges
 
 parser = argparse.ArgumentParser(description='Simulates "broadcast storm" but nodes do not repeat the message again.')
 parser.add_argument('-n', '--vertices', type=int, nargs='?', default=5,
-                    help='amount of vertices in network of complete graph')
+                    help='amount of vertices in network of complete graph, default is 5')
 parser.add_argument('-p', '--probability', type=float, nargs='?', default=0.4,
-                    help='probability of edge generation')
+                    help='probability of edge generation, default is 0.4')
 
 args = parser.parse_args()
 
@@ -21,6 +20,7 @@ n = args.vertices
 initiator = random.randrange(n)
 
 Net: nx.DiGraph = nx.fast_gnp_random_graph(n, prob, directed=True)
+complement_edges(Net)
 for node, attrs in Net.nodes.items():
     attrs['sent'] = node == initiator
 
@@ -49,12 +49,13 @@ for i in count():
             Net.nodes[repeater]['sent'] = True
         downstream['messages'] = 0
 
-plt.show()
-
 plt.subplot(1, 2, 1)
-pos = nx.circular_layout(Net)
-nx.draw(Net, pos, node_color=['blue' if node == initiator else 'magenta' for node in Net.nodes],
-        edge_color=[attrs['color'] for _, attrs in Net.edges.items()])
+pos = nx.spring_layout(Net)
+
+# draw nodes, edges and labels
+nx.draw_networkx_nodes(Net, pos, node_color=['blue' if node == initiator else 'magenta' for node in Net.nodes])
+# we can now added edge thickness and edge color
+nx.draw_networkx_edges(Net, pos, width=2, edge_color=[attrs['color'] for _, attrs in Net.edges.items()])
 plt.title('Net')
 
 plt.subplot(1, 2, 2)
