@@ -22,10 +22,36 @@ Original:
 2) you **CAN** run `pip install -r requirements.txt` to install versions I have;
 3) run `python <script> [--help]` to run any of them.
 
-### 3rd task explanation
-...
+### 3rd task — explanation
+Let's say we have a node *A* with *n* channels.
+Each channel has <code>T<sup>max emit</sup><sub>k</sub></code> as guaranteed maximum time for message to arrive to neighbour
+and <code>T<sup>max arrive</sup><sub>k</sub></code> to arrive.
+Also lets assume that message processing and remiting on nodes is instantaneous and atomic.
+So it is needed for every node to wait <code>T = max(T<sup>max arrive</sup><sub>k</sub>+T<sup>max emit</sup><sub>k</sub>)</code> 
+time to delete table record for a message. It is basically a defence against
+bad cases defined below. If you have different speeds for edges of the network
+the algorithm will create "safe zone" for <code>max(T<sup>max emit</sup><sub>k</sub>)</code> 
+time which can be much less than *T*.
 
 ### 4th task
 
-Interesting results can be seen running this:
+Following formula above, out temporary structure ("broadcast table") exists only for 2 steps
+(as all channel speeds in model are "1 step"):
+
+1. initial step, when the message remitted, preventing case
+   when there is multiple same messages in other channels.
+   But it not preventing remitment to channels from which duplicates
+   will arrive as the node at the moment cannot know about it because
+   messages are processed sequentially.
+2. next step, to prevent "triangle" case when some nodes A-B-C 
+   connected as triangle and some of them emits message to two others,
+   so they emits the message to neighbor and receives it in the next step.
+   ![Example 1](example1.jpg)
+   And also to prevent case when simultaneous emit of a message to 
+   the same node produces "leak" of the message to one of emitting node 
+   (preventing "leaking" multiple identical simultaneous messages 
+   that arrive to some node).
+   ![Example 2](example2.jpg)
+
+Pretty good results can be seen running this:
 `python network-4.py -v=10 -p=0.2 -n=20 -b=0.4 -s=8460`
