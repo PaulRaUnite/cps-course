@@ -25,7 +25,8 @@ Original:
 ### 1st and 2nd tasks
 Basically, every step every node gets its income messages
 and put them into every other channel. 2nd model sets flag on
-if it did some broadcasting, but never set its off.
+if it did some broadcasting and never will repeat, 
+but never set its off.
 
 ### 3rd task — explanation
 Let's say we have a node *A* with *n* channels.
