@@ -22,15 +22,24 @@ Original:
 2) you **CAN** run `pip install -r requirements.txt` to install versions I have;
 3) run `python <script> [--help]` to run any of them.
 
+### 1st and 2nd tasks
+Basically, every step every node gets its income messages
+and put them into every other channel. 2nd model sets flag on
+if it did some broadcasting, but never set its off.
+
 ### 3rd task — explanation
 Let's say we have a node *A* with *n* channels.
-Each channel has <code>T<sup>max emit</sup><sub>k</sub></code> as guaranteed maximum time for message to arrive to neighbour
-and <code>T<sup>max arrive</sup><sub>k</sub></code> to arrive.
+Each channel has <i>T<sup>max emit</sup><sub>k</sub></i> as guaranteed maximum time 
+for emitted message to arrive to nth neighbour
+and <i>T<sup>max arrive</sup><sub>k</sub></i> to arrive from nth neighbour.
 Also lets assume that message processing and remiting on nodes is instantaneous and atomic.
-So it is needed for every node to wait <code>T = max(T<sup>max arrive</sup><sub>k</sub>+T<sup>max emit</sup><sub>k</sub>)</code> 
+So it is needed for every node to wait <i>T = max(T<sup>max arrive</sup><sub>k</sub>+T<sup>max emit</sup><sub>k</sub>)</i> 
 time to delete table record for a message. It is basically a defence against
-bad cases defined below. If you have different speeds for edges of the network
-the algorithm will create "safe zone" for <code>max(T<sup>max emit</sup><sub>k</sub>)</code> 
+bad cases defined below (when two identical messages received in the same time). 
+If you have different speeds for edges of the network
+the algorithm will create "safe zone" (means that the node will 
+not receive the same message from it's neighbours ever) 
+around a node for <i>max(T<sup>max emit</sup><sub>k</sub>)</i> 
 time which can be much less than *T*.
 
 ### 4th task
